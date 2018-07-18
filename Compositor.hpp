@@ -9,6 +9,7 @@
 #define COMPOSITOR_HPP_
 
 #include "Task.hpp"
+#include "Entity.hpp"
 
 extern "C"
 {
@@ -30,6 +31,8 @@ public:
     virtual uint8_t run(void);
     virtual uint8_t setup(void);
 
+    void SetEntities(Entity* entities, int numEntities);
+
     uint8_t m_u8RenderTask;
 
 private:
@@ -37,6 +40,9 @@ private:
     Graphics_Context m_stContext;
 
     struct stMapa m_stBackgroud;
+
+    Entity* m_pEntities;
+    int m_iNumEntities;
 
     //frame8p_t m_f8pFrame;
 
@@ -52,6 +58,9 @@ private:
     int8_t m_iBgX;
     int8_t m_iBgY;
     int8_t m_iSpr;
+    int8_t m_iWcnt;
+
+    int m_iWaitCicles;
 
 
     /**

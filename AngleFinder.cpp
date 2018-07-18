@@ -10,8 +10,12 @@
 
 AngleFinder::AngleFinder()
 {
-    m_i16LastY = 128/2;
-    m_bFirstTime = true;
+    m_fGravityVec[0] = 0.0;
+    m_fGravityVec[1] = 0.0;
+    m_fGravityVec[2] = 0.0;
+
+    //m_i16LastY = 128/2;
+    //m_bFirstTime = true;
     // TODO Auto-generated constructor stub
 
 }
@@ -26,16 +30,23 @@ uint8_t AngleFinder::run()
 
     if (GetGravityVec()){
 
+        // Normalizar el vector de fuerza.
         float32_t l_fGrav2, l_fGravNorm;
         arm_dot_prod_f32(m_fGravityVec, m_fGravityVec, 3, &l_fGrav2);
         arm_sqrt_f32(l_fGrav2, &l_fGravNorm);
 
-        float32_t l_fSin = m_fGravityVec[2]/l_fGravNorm;
+        m_fForceXY[0] = m_fGravityVec[0]/l_fGravNorm;
+        m_fForceXY[1] = m_fGravityVec[1]/l_fGravNorm;
 
-        m_fTheta = asinf(l_fSin);
+        SendForces();
 
-        int16_t l_i16Height = (int16_t) (64*(1 + l_fSin));
-        SendHorizon(l_i16Height);
+        //float32_t l_fSin = m_fGravityVec[2]/l_fGravNorm;
+
+
+        //m_fTheta = asinf(l_fSin);
+
+        //int16_t l_i16Height = (int16_t) (64*(1 + l_fSin));
+        //SendHorizon(l_i16Height);
 
         // Activar la pantalla cuando se tenga la primera medición.
         //if (m_bFirstTime){
@@ -72,6 +83,20 @@ bool AngleFinder::SendHorizon(int16_t i_i16Horizon)
     l_stMensaje.u32MessageData = i_i16Horizon;
     l_stMensaje.u8MessageCode = i16ScalarMessage;
     return sendMessage(l_stMensaje);
+}bool
+AngleFinder::SendForces()
+{
+    if (m_u8DrawTask == m_u8TaskID)
+        return true;
+
+    st_Message l_stMensaje;
+    l_stMensaje.bMessageValid = true;
+    l_stMensaje.u8SourceID = m_u8TaskID;
+    l_stMensaje.u8DestinationID = m_u8DrawTask;
+    l_stMensaje.u32MessageData = 2;
+    l_stMensaje.u8MessageCode = i16VectorMessage;
+    l_stMensaje.pPayload = (uint8_t *)m_fForceXY;
+    return sendMessage(l_stMensaje);
 }
 
 bool AngleFinder::GetGravityVec()
@@ -84,7 +109,8 @@ bool AngleFinder::GetGravityVec()
             return false;
         }
         for (int i = 0; i < len; i++) {
-            this->m_fGravityVec[i] = (float32_t) data[i];
+            float32_t new_data = (float32_t) data[i];
+            m_fGravityVec[i] = m_fGravityVec[i]*0.6 + new_data*0.4;
         }
         return true;
     } else {

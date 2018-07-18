@@ -12,6 +12,8 @@ Compositor::Compositor()
     m_iBgX = 0;
     m_iBgY = 0;
     m_iSpr = 0;
+
+    m_iWaitCicles = 40;
 }
 
 Compositor::~Compositor()
@@ -39,6 +41,12 @@ uint8_t Compositor::setup()
     return NO_ERR;
 }
 
+void Compositor::SetEntities(Entity* entities, int numEntities)
+{
+    m_pEntities = entities;
+    m_iNumEntities = numEntities;
+}
+
 uint8_t Compositor::run()
 {
     switch(m_iState){
@@ -56,13 +64,20 @@ uint8_t Compositor::run()
         break;
     }
     case DrawingSpr: {
-        m_iState = Finished;
+        if (DrawElementsStep()){
+            m_iState = Finished;
+            m_iWcnt = 0;
+        }
         break;
     }
     case Finished: {
-        m_iState = DrawingBg;
-        m_iBgX = 0;
-        m_iBgY = 0;
+        m_iWcnt++;
+        if (m_iWcnt >= m_iWaitCicles) {
+            m_iState = DrawingBg;
+            m_iBgX = 0;
+            m_iBgY = 0;
+
+        }
         break;
     }
     default: {
@@ -144,6 +159,24 @@ bool Compositor::DrawBackgroundStep()
         return true;
     }
 
+    return false;
+}
+
+bool Compositor::DrawElementsStep() {
+
+    int32_t x;
+    int32_t y;
+    int32_t radius = 7;
+
+    m_pEntities[m_iSpr].GetPos(&x, &y);
+
+    Graphics_setForegroundColor(&m_stContext, GRAPHICS_COLOR_BEIGE);
+    Graphics_fillCircle(&m_stContext, x, y, radius);
+
+    m_iSpr++;
+    if (m_iSpr == m_iNumEntities) {
+        return true;
+    }
     return false;
 }
 

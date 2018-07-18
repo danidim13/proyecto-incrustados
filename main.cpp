@@ -7,6 +7,7 @@
 #include "AngleFinder.hpp"
 #include "FrameBuffer.hpp"
 #include "Compositor.hpp"
+#include "GameTask.hpp"
 
 // ##########################
 // Global/Static declarations
@@ -27,11 +28,17 @@ void main(void)
     //Display Pantalla; // valor provisional
 
     AngleFinder AngleTask;
+    GameTask gameTask;
     AngleTask.m_u8DrawTask = AngleTask.m_u8TaskID;
-    //AngleTask.m_u8DrawTask = Pantalla.m_u8TaskID;
+    AngleTask.m_u8DrawTask = gameTask.m_u8TaskID;
 
     //FrameBuffer fbTask;
     Compositor compTask;
+
+    int i = 0;
+    Entity* entities = gameTask.GetEntities(&i);
+
+    compTask.SetEntities(entities, i);
 
     //fbTask.m_u8CompositorTask = compTask.m_u8TaskID;
     //compTask.m_u8RenderTask = fbTask.m_u8TaskID;
@@ -47,10 +54,11 @@ void main(void)
     // La pantalla se refresca a Aprox 30 Hz
     //g_MainScheduler.attach(&Pantalla, TaskType_Always,TaskActiveFalse,1);
 
-    g_MainScheduler.attach(&compTask, TaskType_Periodic,TaskActiveTrue, 4);
+    g_MainScheduler.attach(&compTask, TaskType_Periodic,TaskActiveTrue, 2);
 
     // Se calcula un nuevo angulo aprox cada 75 ms.
-    g_MainScheduler.attach(&AngleTask, TaskType_Periodic, TaskActiveTrue, 500);
+    g_MainScheduler.attach(&AngleTask, TaskType_Periodic, TaskActiveTrue, 200);
+    g_MainScheduler.attach(&gameTask, TaskType_Periodic, TaskActiveTrue, 100);
     g_MainScheduler.m_u8ADCTask = AngleTask.m_u8TaskID;
 
     // - Run the Setup for the scheduler and all tasks

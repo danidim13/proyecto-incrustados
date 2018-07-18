@@ -15,8 +15,10 @@ public:
     void SetGravity(float gx, float gy);
 
 
-private:
     Entity bolita;
+
+
+private:
 
     float m_drag;
 
