@@ -5,9 +5,10 @@
 #include "Display.hpp"
 #include "configuracion.hpp"
 #include "AngleFinder.hpp"
-#include "FrameBuffer.hpp"
 #include "Compositor.hpp"
 #include "GameTask.hpp"
+#include <stdlib.h>
+#include <time.h>
 
 // ##########################
 // Global/Static declarations
@@ -23,9 +24,9 @@ Scheduler g_MainScheduler; // - Instantiate a Scheduler
 // #########################
 void main(void)
 {
+    unsigned int seed = 0xc0ffee00;
 
-
-    //Display Pantalla; // valor provisional
+    srand(seed);
 
     AngleFinder AngleTask;
     GameTask gameTask;
@@ -109,6 +110,8 @@ void Setup(void)
     NVIC_SetPriority(T32_INT1_IRQn,1);
     NVIC_EnableIRQ(T32_INT1_IRQn);
 
+
+
     ConfigAccel();
     ConfigADC();
 
@@ -139,6 +142,7 @@ extern "C"
         x = setpoint - ADC14->MEM[0];
         y = setpoint - ADC14->MEM[1];
         z = setpoint - ADC14->MEM[2];
+
 
         g_MainScheduler.ADCHandler(x, y, z);
 

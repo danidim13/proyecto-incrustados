@@ -24,6 +24,13 @@ uint8_t GameTask::setup()
     m_fYforce = 0;
     m_fForceScale = 1.0;
     m_oGame.SetGravity(m_fXforce, m_fYforce);
+
+    //m_oGame.GenerateMap();
+
+    for (int i = 0; i < NUM_BOLITAS; i++) {
+        m_oGame.bolitas[i].Spawn();
+    }
+
     return NO_ERR;
 }
 
@@ -40,8 +47,8 @@ uint8_t GameTask::run()
 
 Entity* GameTask::GetEntities(int* i_iElem)
 {
-    *i_iElem = 1;
-    return &m_oGame.bolita;
+    *i_iElem = NUM_BOLITAS;
+    return m_oGame.bolitas;
 }
 
 

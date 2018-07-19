@@ -39,7 +39,7 @@ private:
 
     Graphics_Context m_stContext;
 
-    struct stMapa m_stBackgroud;
+    //struct stMapa m_stBackgroud;
 
     Entity* m_pEntities;
     int m_iNumEntities;
@@ -67,7 +67,16 @@ private:
      * Retorna true cuando termina de dibujar el background
      */
     bool DrawBackgroundStep();
+
+    /**
+     * Retorna true cuando termina de dibujar los objetos
+     */
     bool DrawElementsStep();
+
+    /**
+     * Marca todos los bits de dirty en el background.
+     */
+    void ResetBackground();
 };
 
 #endif /* COMPOSITOR_HPP_ */

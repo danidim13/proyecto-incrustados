@@ -43,22 +43,23 @@ typedef struct stFrame* frame8p_t;
 #define GRID_LX 8
 #define GRID_LY 8
 
-#define COLOR_BITS 4;
-#define COLOR_BG  0x0f00;
-#define COLOR_FG  0xf000;
+//#define COLOR_BITS 4;
+//#define COLOR_BG  0x0f00;
+//#define COLOR_FG  0xf000;
 
-const int16_t TOP_B  = 1;
-const int16_t LEFT_B = 2;
-const int16_t BOT_B  =  4;
-const int16_t RIGHT_B = 8;
 
+const int16_t TOP_B   = 0x0001;
+const int16_t LEFT_B  = 0x0002;
+const int16_t BOT_B   = 0x0004;
+const int16_t RIGHT_B = 0x0008;
+const int16_t DIRTY_B = 0x0010;
 
 struct stMapa {
     int16_t grid[GRID_LY * GRID_LX] = {
-         0b0011,0b1101,0b0111,0b1001,0b0111,0b1101,0b10111,9,
+         3,1,1,1,1,1,1,9,
          2,0,0,0,0,0,0,8,
          2,0,0,0,0,0,0,8,
-         2,0,0,0,3,0,0,8,
+         2,0,0,0,0,0,0,8,
          2,0,0,0,0,0,0,8,
          2,0,0,0,0,0,0,8,
          2,0,0,0,0,0,0,8,
@@ -67,6 +68,8 @@ struct stMapa {
     int32_t bg = GRAPHICS_COLOR_BLACK;
     int32_t fg = GRAPHICS_COLOR_WHITE_SMOKE;
 };
+
+extern struct stMapa g_stBackground;
 
 extern int32_t g_pColorTable[16];
 /*{

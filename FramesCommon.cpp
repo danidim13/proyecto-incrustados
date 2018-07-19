@@ -9,6 +9,8 @@
 #include <FramesCommon.hpp>
 
 
+struct stMapa g_stBackground;
+
 int32_t g_i32FBColors[16] = {
     GRAPHICS_COLOR_WHITE,
     GRAPHICS_COLOR_ANTIQUE_WHITE,
